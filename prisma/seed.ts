@@ -41,7 +41,7 @@ async function main() {
     create: {
       email: 'doctor@rxnxt.com',
       password: hashedPassword,
-      fullName: 'Dr. Shivaram Kumar',
+      fullName: 'Dr. Paani Datta',
       role: 'clinic_admin',
       specialization: 'General Physician',
       clinicId: clinic.id,

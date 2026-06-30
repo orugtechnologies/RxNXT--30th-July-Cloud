@@ -78,7 +78,7 @@ export default function RegisterPage() {
               <Label htmlFor="fullName">Full Name</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input id="fullName" name="fullName" placeholder="Dr. Shivaram" className="pl-9" value={form.fullName} onChange={handleChange} required disabled={loading} />
+                <Input id="fullName" name="fullName" placeholder="Dr. Paani Datta" className="pl-9" value={form.fullName} onChange={handleChange} required disabled={loading} />
               </div>
             </div>
             <div className="space-y-1">
