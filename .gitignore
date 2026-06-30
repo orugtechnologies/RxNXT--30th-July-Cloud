@@ -2,3 +2,4 @@ node_modules/
 *.log
 rxnxt-db.json
 .env
+.next/
