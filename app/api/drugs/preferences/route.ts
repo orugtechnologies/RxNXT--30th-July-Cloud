@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth-server';
 
@@ -11,3 +12,4 @@ export async function POST(request: Request) {
 export async function GET() {
   return NextResponse.json({ data: [] });
 }
+
