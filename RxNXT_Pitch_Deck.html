@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxNXT - Investor Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        clinic: {
+                            navy: '#0f172a',
+                            blue: '#2563eb',
+                            emerald: '#10b981',
+                            accent: '#38bdf8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #cbd5e1; display: flex; flex-direction: column; align-items: center; padding: 2rem 0; }
+        
+        /* 16:9 Presentation Slide Format */
+        .slide {
+            width: 1280px; 
+            height: 720px;
+            background: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; display: block; }
+            .slide { margin: 0; border-radius: 0; box-shadow: none; width: 297mm; height: 210mm; page-break-after: always; }
+            .no-print { display: none !important; }
+        }
+
+        .bg-dots {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-header { padding: 40px 60px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .slide-body { padding: 0 60px 40px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .slide-footer { position: absolute; bottom: 30px; left: 60px; right: 60px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 500; color: #94a3b8; }
+        
+        .mockup-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Animated floating effect for UI mockups */
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Print Controls -->
+    <div class="fixed top-6 right-6 bg-white p-4 rounded-xl shadow-xl z-50 no-print border border-slate-200">
+        <button onclick="window.print()" class="bg-clinic-blue text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition w-full mb-2">
+            Save as PDF
+        </button>
+        <p class="text-xs text-slate-500 text-center">Set Layout to "Landscape"</p>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide bg-gradient-to-br from-clinic-navy to-slate-900 text-white bg-dots">
+        <div class="absolute top-10 left-10">
+            <span class="px-4 py-1.5 rounded-full border border-clinic-accent/30 bg-clinic-accent/10 text-clinic-accent font-semibold text-sm tracking-widest uppercase">Confidential Pitch Deck</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center text-center px-20">
+            <div class="h-48 bg-white/95 backdrop-blur rounded-3xl p-6 shadow-2xl floating flex items-center justify-center mb-8 border border-white/20">
+                <img src="./assets/RxNXT.png" alt="RxNXT Logo" class="h-full object-contain drop-shadow-sm">
+            </div>
+            <h1 class="font-heading font-black text-6xl mb-6 tracking-tight">The Future of Prescribing</h1>
+            <p class="text-3xl font-light text-slate-300 max-w-4xl leading-tight">
+                The lightning-fast clinical engine that doctors <span class="font-semibold text-white">actually want to use.</span>
+            </p>
+        </div>
+        <div class="slide-footer text-slate-500">
+            <span>Confidential & Proprietary</span>
+            <span>June 2026</span>
+        </div>
+    </div>
+
+    <!-- Slide 2: The Core Problem -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2 class="font-heading font-bold text-5xl text-clinic-navy">The Healthcare Bottleneck</h2>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body flex-row gap-16 items-center">
+            <div class="w-1/2 space-y-8">
+                <div class="border-l-4 border-red-500 pl-6">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Severe Doctor Burnout</h3>
+                    <p class="text-lg text-slate-600">Traditional EMRs force doctors to spend 40% of their day doing clerical data entry instead of treating patients.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-6">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Prescription Errors</h3>
+                    <p class="text-lg text-slate-600">Handwritten prescriptions lead to critical dispensing errors at pharmacies, risking patient safety.</p>
+                </div>
+                <div class="border-l-4 border-amber-500 pl-6">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Software Bloat & Latency</h3>
+                    <p class="text-lg text-slate-600">Existing software requires internet connectivity, has massive latency, and includes dozens of useless modules that clinics never use.</p>
+                </div>
+            </div>
+            <div class="w-1/2 bg-slate-50 rounded-2xl p-10 border border-slate-200 shadow-inner h-full flex flex-col justify-center relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-9xl text-slate-200 font-serif opacity-50">"</div>
+                <p class="text-3xl font-medium text-slate-700 leading-snug relative z-10 italic">
+                    "I just want to write a prescription in 10 seconds and move to the next patient. Current software makes this impossible."
+                </p>
+                <p class="mt-6 text-xl font-bold text-clinic-blue relative z-10">— Common Doctor Feedback</p>
+            </div>
+        </div>
+        <div class="slide-footer"><span>The Problem</span><span>02</span></div>
+    </div>
+
+    <!-- Slide 3: The Productivity Solution -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2 class="font-heading font-bold text-5xl text-clinic-navy">The Productivity Engine</h2>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body">
+            <p class="text-2xl text-slate-600 mb-12">We built a local-first, offline-capable platform that eliminates latency. It allows doctors to generate beautiful digital prescriptions <strong>10x faster</strong> than writing by hand.</p>
+            
+            <div class="grid grid-cols-3 gap-8 h-full">
+                <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100 flex flex-col">
+                    <div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-200">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Treatment Templates</h3>
+                    <p class="text-lg text-slate-600 flex-1">Save complex drug combinations as "Quick Treatment Groups" (e.g., Viral Fever Protocol) and apply them with a single click.</p>
+                </div>
+                
+                <div class="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 flex flex-col">
+                    <div class="w-14 h-14 bg-emerald-500 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-200">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">One-Click Clone</h3>
+                    <p class="text-lg text-slate-600 flex-1">For chronic patients, instantly clone their last visit's prescription, make minor dosage tweaks, and print. Seconds instead of minutes.</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col">
+                    <div class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-slate-200">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Instant PDF Generation</h3>
+                    <p class="text-lg text-slate-600 flex-1">A4 layouts are generated entirely client-side without waiting for a server. No loading spinners, just instant print-ready files.</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>The Solution</span><span>03</span></div>
+    </div>
+
+    <!-- Slide 4: Massive Revenue Generation -->
+    <div class="slide bg-clinic-navy text-white bg-dots">
+        <div class="slide-header border-b border-slate-800">
+            <h2 class="font-heading font-bold text-5xl text-white">Massive Revenue Generation</h2>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body pt-10">
+            <div class="grid grid-cols-2 gap-x-16 gap-y-12">
+                <!-- Stream 1 -->
+                <div class="flex gap-6">
+                    <div class="w-16 h-16 rounded-full bg-clinic-blue/20 text-clinic-accent flex items-center justify-center shrink-0 border border-clinic-blue/30">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">B2B SaaS Subscriptions</h3>
+                        <p class="text-slate-400 text-lg">Freemium model for solo practitioners. Premium tiers (₹999/mo) unlock advanced analytics, unlimited treatment templates, and multi-doctor clinic management.</p>
+                    </div>
+                </div>
+                <!-- Stream 2 -->
+                <div class="flex gap-6">
+                    <div class="w-16 h-16 rounded-full bg-clinic-emerald/20 text-clinic-emerald flex items-center justify-center shrink-0 border border-clinic-emerald/30">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Pharmacy API Ecosystem</h3>
+                        <p class="text-slate-400 text-lg">Charge a micro-transaction fee for direct API integrations with local pharmacy chains to automatically receive and fulfill digital prescriptions securely.</p>
+                    </div>
+                </div>
+                <!-- Stream 3 -->
+                <div class="flex gap-6">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/30">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Anonymized Data Insights</h3>
+                        <p class="text-slate-400 text-lg">Monetize massive datasets (HIPAA compliant, fully anonymized) of prescription trends and regional disease outbreaks, highly valuable to Pharma research.</p>
+                    </div>
+                </div>
+                <!-- Stream 4 -->
+                <div class="flex gap-6">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Enterprise White-Labeling</h3>
+                        <p class="text-slate-400 text-lg">License the blazing-fast RxNXT engine to corporate hospital chains under their own branding, utilizing our modern tech stack to replace their legacy EMRs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer text-slate-500 border-t border-slate-800 pt-6"><span>Monetization Strategy</span><span>04</span></div>
+    </div>
+
+    <!-- Slide 5: Real UI Showcase 1 -->
+    <div class="slide">
+        <div class="slide-header pb-4">
+            <div>
+                <h2 class="font-heading font-bold text-4xl text-clinic-navy">The Intelligent Dashboard</h2>
+                <p class="text-slate-500 mt-2 text-lg">Daily clinical overview, quick actions, and patient flow management.</p>
+            </div>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body">
+            <div class="mockup-container p-6 bg-slate-800 flex flex-col gap-4">
+                <!-- Dashboard UI Representation -->
+                <div class="w-full flex gap-4 h-full">
+                    <!-- Sidebar -->
+                    <div class="w-1/4 bg-slate-900 rounded-xl p-5 border border-slate-700/50 flex flex-col">
+                        <div class="mb-10">
+                            <div class="bg-white rounded-lg p-3 w-40 shadow-sm"><img src="./assets/RxNXT.png" alt="RxNXT" class="w-full object-contain"></div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="w-full bg-blue-600/20 border-l-4 border-blue-500 rounded-r-lg p-3 flex items-center gap-3">
+                                <div class="w-5 h-5 rounded bg-blue-500/50"></div>
+                                <span class="text-blue-400 font-medium text-sm">Dashboard</span>
+                            </div>
+                            <div class="w-full hover:bg-slate-800 rounded-lg p-3 flex items-center gap-3 transition">
+                                <div class="w-5 h-5 rounded bg-slate-700"></div>
+                                <span class="text-slate-400 font-medium text-sm">Prescriptions</span>
+                            </div>
+                            <div class="w-full hover:bg-slate-800 rounded-lg p-3 flex items-center gap-3 transition">
+                                <div class="w-5 h-5 rounded bg-slate-700"></div>
+                                <span class="text-slate-400 font-medium text-sm">Patients</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Main Content -->
+                    <div class="w-3/4 flex flex-col gap-4">
+                        <!-- Header -->
+                        <div class="w-full bg-slate-900 rounded-xl flex items-center justify-between px-6 py-5 border border-slate-700/50 shadow-sm">
+                            <div>
+                                <h3 class="text-white font-bold text-xl">Good afternoon, Dr. Kumar</h3>
+                                <p class="text-slate-400 text-sm mt-1">Here is your clinical overview for today</p>
+                            </div>
+                            <div class="bg-blue-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm shadow-lg shadow-blue-500/20">+ New Prescription</div>
+                        </div>
+                        <!-- Stats Row -->
+                        <div class="flex gap-4">
+                            <div class="flex-1 bg-slate-900 rounded-xl border-t-4 border-blue-500 p-5 border-x border-b border-slate-700/50 shadow-sm">
+                                <p class="text-slate-400 text-sm font-medium mb-1">Total Patients</p>
+                                <div class="text-white font-bold text-3xl">142</div>
+                            </div>
+                            <div class="flex-1 bg-slate-900 rounded-xl border-t-4 border-emerald-500 p-5 border-x border-b border-slate-700/50 shadow-sm">
+                                <p class="text-slate-400 text-sm font-medium mb-1">Rx Today</p>
+                                <div class="text-white font-bold text-3xl">28</div>
+                            </div>
+                            <div class="flex-1 bg-slate-900 rounded-xl border-t-4 border-rose-500 p-5 border-x border-b border-slate-700/50 shadow-sm">
+                                <p class="text-slate-400 text-sm font-medium mb-1">Follow-ups</p>
+                                <div class="text-white font-bold text-3xl">12</div>
+                            </div>
+                        </div>
+                        <!-- Table Area -->
+                        <div class="w-full flex-1 bg-slate-900 rounded-xl p-6 border border-slate-700/50 shadow-sm flex flex-col">
+                            <h4 class="text-white font-bold mb-4">Recent Consultations</h4>
+                            <div class="space-y-3 flex-1">
+                                <div class="w-full bg-slate-800/50 rounded-lg p-3 flex justify-between items-center border border-slate-700/50">
+                                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-900 text-blue-300 flex items-center justify-center text-xs font-bold">AR</div><span class="text-slate-200 text-sm font-medium">Amit Roy</span></div>
+                                    <span class="text-slate-400 text-xs">Viral Fever</span>
+                                    <span class="text-emerald-400 text-xs font-medium px-2 py-1 bg-emerald-400/10 rounded">Rx Generated</span>
+                                </div>
+                                <div class="w-full bg-slate-800/50 rounded-lg p-3 flex justify-between items-center border border-slate-700/50">
+                                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-purple-900 text-purple-300 flex items-center justify-center text-xs font-bold">SP</div><span class="text-slate-200 text-sm font-medium">Sneha Patel</span></div>
+                                    <span class="text-slate-400 text-xs">Hypertension</span>
+                                    <span class="text-emerald-400 text-xs font-medium px-2 py-1 bg-emerald-400/10 rounded">Rx Generated</span>
+                                </div>
+                                <div class="w-full bg-slate-800/50 rounded-lg p-3 flex justify-between items-center border border-slate-700/50">
+                                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-amber-900 text-amber-300 flex items-center justify-center text-xs font-bold">RK</div><span class="text-slate-200 text-sm font-medium">Rahul Kumar</span></div>
+                                    <span class="text-slate-400 text-xs">Migraine</span>
+                                    <span class="text-slate-500 text-xs font-medium px-2 py-1 bg-slate-700 rounded">Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Product Showcase</span><span>05</span></div>
+    </div>
+
+    <!-- Slide 6: Real UI Showcase 2 -->
+    <div class="slide">
+        <div class="slide-header pb-4">
+            <div>
+                <h2 class="font-heading font-bold text-4xl text-clinic-navy">The Timeline Architecture</h2>
+                <p class="text-slate-500 mt-2 text-lg">A unified, chronological view of a patient's entire medical history.</p>
+            </div>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body flex-row gap-8">
+            <div class="w-1/3 bg-slate-50 p-8 rounded-2xl border border-slate-200">
+                <h3 class="text-2xl font-bold mb-4">Data Superiority</h3>
+                <p class="text-slate-600 mb-6 leading-relaxed">Unlike paper, the RxNXT Timeline retains every diagnosis, note, and prescribed medicine natively.</p>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-clinic-blue"></div><span class="font-medium text-slate-700">Chronological Visit Tracking</span></li>
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-clinic-blue"></div><span class="font-medium text-slate-700">Historical Medicine Retrieval</span></li>
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-clinic-blue"></div><span class="font-medium text-slate-700">One-Click Visit Cloning</span></li>
+                </ul>
+            </div>
+            <div class="w-2/3 mockup-container bg-white flex flex-col p-8 items-start">
+                <!-- Timeline Representation -->
+                <div class="w-full flex gap-6">
+                    <div class="w-16 flex flex-col items-center">
+                        <div class="w-4 h-4 rounded-full bg-blue-500 z-10 ring-4 ring-white shadow-sm"></div>
+                        <div class="w-0.5 h-36 bg-blue-100 my-1"></div>
+                        <div class="w-4 h-4 rounded-full bg-slate-300 z-10 ring-4 ring-white shadow-sm"></div>
+                        <div class="w-0.5 h-36 bg-slate-100 my-1"></div>
+                    </div>
+                    <div class="flex-1 space-y-8">
+                        <!-- Recent Visit -->
+                        <div class="bg-blue-50/50 border border-blue-200 p-6 rounded-xl relative shadow-sm hover:shadow-md transition">
+                            <div class="absolute -left-3 top-5 w-4 h-4 rotate-45 bg-blue-50/50 border-b border-l border-blue-200"></div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="text-blue-900 font-bold text-lg">15 May 2026</h4>
+                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">Follow-up</span>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-4"><span class="font-semibold text-slate-700">Diagnosis:</span> Acute Bronchitis</p>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <div class="px-3 py-1.5 bg-white rounded-lg border border-blue-100 text-xs font-semibold text-slate-700 shadow-sm flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Azithromycin 500mg
+                                </div>
+                                <div class="px-3 py-1.5 bg-white rounded-lg border border-blue-100 text-xs font-semibold text-slate-700 shadow-sm flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-400"></span> Levocetirizine 5mg
+                                </div>
+                            </div>
+                            
+                            <div class="w-full bg-white rounded-lg border border-blue-100 flex items-center justify-between px-4 py-3">
+                                <span class="text-sm font-medium text-slate-600 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    Prescription Generated
+                                </span>
+                                <button class="text-sm font-bold text-clinic-blue hover:text-blue-700 flex items-center gap-1">
+                                    Clone to New Rx <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Past Visit -->
+                        <div class="bg-white border border-slate-200 p-6 rounded-xl relative shadow-sm opacity-70">
+                            <div class="absolute -left-3 top-5 w-4 h-4 rotate-45 bg-white border-b border-l border-slate-200"></div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="text-slate-700 font-bold text-lg">02 Mar 2026</h4>
+                                <span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">First Visit</span>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-4"><span class="font-semibold text-slate-700">Diagnosis:</span> Upper Respiratory Tract Infection</p>
+                            <div class="flex flex-wrap gap-2">
+                                <div class="px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 text-xs font-semibold text-slate-500">Amoxicillin 500mg</div>
+                                <div class="px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 text-xs font-semibold text-slate-500">Paracetamol 650mg</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Product Showcase</span><span>06</span></div>
+    </div>
+
+    <!-- Slide 7: Real UI Showcase 3 (Add Patient) -->
+    <div class="slide">
+        <div class="slide-header pb-4">
+            <div>
+                <h2 class="font-heading font-bold text-4xl text-clinic-navy">Rapid Patient Onboarding</h2>
+                <p class="text-slate-500 mt-2 text-lg">Frictionless entry designed for high-volume clinic reception desks.</p>
+            </div>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body flex-row gap-8">
+            <div class="w-1/3 bg-slate-50 p-8 rounded-2xl border border-slate-200 flex flex-col justify-center">
+                <h3 class="text-2xl font-bold mb-4">Under 15 Seconds</h3>
+                <p class="text-slate-600 mb-6 leading-relaxed">Receptionists can register a new patient in under 15 seconds. No bloated forms, just the essential clinical demographic data needed to generate a legal prescription.</p>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="font-medium text-slate-700">Auto-formatting Phone Numbers</span></li>
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="font-medium text-slate-700">Keyboard Navigable</span></li>
+                    <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="font-medium text-slate-700">Instant Database Sync</span></li>
+                </ul>
+            </div>
+            <div class="w-2/3 mockup-container bg-slate-900 flex items-center justify-center p-8">
+                <!-- Abstract Add Patient Form Representation -->
+                <div class="w-full max-w-lg bg-white rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-2 bg-emerald-500"></div>
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="text-2xl font-bold text-slate-800">New Patient Registration</h4>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-lg">×</div>
+                    </div>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name</label>
+                            <div class="w-full h-11 bg-slate-50 border border-slate-200 rounded-lg flex items-center px-3">
+                                <div class="w-48 h-4 bg-slate-300 rounded"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                            <div class="w-full h-11 bg-slate-50 border border-slate-200 rounded-lg flex items-center px-3 gap-2">
+                                <span class="text-slate-400 font-medium">+91</span>
+                                <div class="w-32 h-4 bg-slate-300 rounded"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Age</label>
+                                <div class="w-full h-11 bg-slate-50 border border-slate-200 rounded-lg flex items-center px-3">
+                                    <div class="w-8 h-4 bg-slate-300 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="flex-2 w-1/2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Gender</label>
+                                <div class="w-full h-11 bg-slate-50 border border-slate-200 rounded-lg flex items-center px-3 justify-between">
+                                    <div class="w-16 h-4 bg-slate-300 rounded"></div>
+                                    <div class="w-3 h-3 border-r-2 border-b-2 border-slate-400 rotate-45 transform -translate-y-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3">
+                        <div class="px-5 py-2.5 rounded-lg font-bold text-slate-500">Cancel</div>
+                        <div class="px-6 py-2.5 rounded-lg font-bold text-white bg-emerald-500 shadow-lg shadow-emerald-500/30 flex items-center gap-2">
+                            Register Patient <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Product Showcase</span><span>07</span></div>
+    </div>
+
+    <!-- Slide 8: Tech Stack -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2 class="font-heading font-bold text-5xl text-clinic-navy">Under the Hood</h2>
+            <div class="bg-white/95 backdrop-blur rounded-lg p-2 shadow-sm border border-slate-200/50"><img src="./assets/RxNXT.png" alt="RxNXT" class="h-8 object-contain"></div>
+        </div>
+        <div class="slide-body flex-row gap-12 items-center">
+            <div class="w-1/2">
+                <p class="text-2xl text-slate-600 mb-8 leading-relaxed">Built on a highly scalable, modern enterprise technology stack designed for extreme reliability.</p>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center font-bold text-xl">Nx</div>
+                        <div class="text-xl font-semibold">Next.js 14 App Router</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-teal-500 text-white rounded-lg flex items-center justify-center font-bold text-xl">Tw</div>
+                        <div class="text-xl font-semibold">Tailwind CSS</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-800 text-white rounded-lg flex items-center justify-center font-bold text-xl">Pr</div>
+                        <div class="text-xl font-semibold">Prisma ORM</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xl">DB</div>
+                        <div class="text-xl font-semibold">SQLite Local First &rarr; Postgres Edge Ready</div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-1/2 bg-slate-900 rounded-2xl p-8 font-mono text-sm text-green-400 overflow-hidden shadow-2xl h-full flex flex-col">
+                <div class="flex gap-2 mb-4">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="opacity-80">
+                    <p>✓ Database connection verified</p>
+                    <p>✓ Prisma schema synchronized</p>
+                    <p>✓ Client PDF generator ready</p>
+                    <p class="mt-4 text-blue-400"># Deploying Edge APIs...</p>
+                    <p>✓ /api/patients -> 12ms</p>
+                    <p>✓ /api/prescriptions/clone -> 24ms</p>
+                    <p>✓ /api/templates/save -> 18ms</p>
+                    <p class="mt-4 text-white font-bold animate-pulse">SYSTEM READY FOR PRODUCTION SCALING 🚀</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Technology Architecture</span><span>08</span></div>
+    </div>
+
+    <!-- Slide 9: The Ask -->
+    <div class="slide bg-gradient-to-br from-clinic-blue to-blue-900 text-white">
+        <div class="flex-1 flex flex-col items-center justify-center text-center px-20">
+            <h2 class="font-heading font-black text-7xl mb-8 leading-tight">Ready to Modernize<br>Clinical Healthcare.</h2>
+            <p class="text-2xl text-blue-100 max-w-3xl mb-12">We have the product. We have the architecture. We are seeking strategic partners to scale distribution across India's thousands of independent clinics.</p>
+            
+            <div class="flex gap-6">
+                <div class="bg-white text-clinic-blue px-8 py-4 rounded-xl font-bold text-xl shadow-xl">Contact Founders</div>
+                <div class="border border-white/30 bg-white/10 px-8 py-4 rounded-xl font-bold text-xl hover:bg-white/20 transition cursor-pointer">View Prototype Demo</div>
+            </div>
+        </div>
+        <div class="slide-footer text-blue-200">
+            <span>Investment & Partnership</span>
+            <span>09</span>
+        </div>
+    </div>
+
+</body>
+</html>

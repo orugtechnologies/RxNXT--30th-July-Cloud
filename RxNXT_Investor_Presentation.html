@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxNXT - Investor Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap');
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --accent: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e2e8f0;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* A4 Page Formatting */
+        .page {
+            width: 297mm; /* Landscape for Presentation */
+            height: 210mm;
+            background: white;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bg-gradient {
+            background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+            color: white;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .title-slide h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content Slides */
+        .content-slide {
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .split-layout {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .split-layout > div {
+            flex: 1;
+        }
+
+        .text-content {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        .text-content ul {
+            margin-left: 25px;
+            margin-top: 20px;
+        }
+
+        .text-content li {
+            margin-bottom: 15px;
+        }
+
+        /* Screen Slides */
+        .screen-slide {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .screen-header {
+            padding: 40px 60px 20px 60px;
+        }
+        
+        .screen-header h2 {
+            font-size: 2.2rem;
+            color: var(--dark);
+        }
+        
+        .screen-header p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-top: 10px;
+        }
+
+        .screen-container {
+            flex: 1;
+            padding: 0 60px 40px 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f1f5f9;
+            margin: 0 60px 40px 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; margin: 0; }
+            .page { 
+                margin: 0; 
+                box-shadow: none; 
+                page-break-after: always; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print { display: none; }
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+        }
+        
+        .btn:hover { background: #1d4ed8; }
+
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+        }
+
+        .bg-gradient .footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <button class="btn" onclick="window.print()">Save as PDF</button>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Click to print, select "Save as PDF", Layout: Landscape.</p>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="page bg-gradient bg-pattern title-slide">
+        <span class="badge">Investor & Incubator Review</span>
+        <h1>RxNXT</h1>
+        <h2>Revolutionizing Digital Prescriptions in India</h2>
+        <p style="color: #94a3b8; font-size: 1.2rem; margin-top: 40px;">June 2026</p>
+    </div>
+
+    <!-- Slide 2: The Problem -->
+    <div class="page content-slide">
+        <div class="header">
+            <h2>The Healthcare Challenge</h2>
+            <div class="logo">RxNXT</div>
+        </div>
+        <div class="split-layout">
+            <div class="text-content">
+                <p>Doctors in India face a critical bottleneck with traditional prescription methods, impacting both efficiency and patient safety.</p>
+                <ul>
+                    <li><strong>Time Inefficiency:</strong> Excessive time spent handwriting routine prescriptions or fighting clunky EMRs.</li>
+                    <li><strong>Clinical Errors:</strong> Poor legibility leads to dangerous dispensing errors at the pharmacy.</li>
+                    <li><strong>Data Fragmentation:</strong> Patient histories and preferred clinic medicines remain disconnected.</li>
+                    <li><strong>High EMR Overhead:</strong> Traditional solutions are bloated with unnecessary billing and inventory modules.</li>
+                </ul>
+            </div>
+            <div style="background: #f1f5f9; border-radius: 12px; padding: 40px; display: flex; align-items: center; justify-content: center;">
+                <h3 style="font-size: 2rem; color: #cbd5e1; text-align: center; line-height: 1.4;">"Doctors want to prescribe, not do data entry."</h3>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Confidential</span>
+            <span>02</span>
+        </div>
+    </div>
+
+    <!-- Slide 3: The Solution -->
+    <div class="page content-slide">
+        <div class="header">
+            <h2>The RxNXT Solution</h2>
+            <div class="logo">RxNXT</div>
+        </div>
+        <div class="split-layout">
+            <div class="text-content">
+                <p>A modern, blazing-fast platform engineered to replace slow, error-prone paper prescriptions with an intuitive digital workspace.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Sub-100ms Search</h3>
+                        <p>Typo-tolerant PostgreSQL pg_trgm search finds medicines instantly (e.g., "parctml" -> Paracetamol).</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Instant PDFs</h3>
+                        <p>Client-side PDF generation creates beautifully formatted A4 prescriptions without server delay.</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Smart Auto-Fill</h3>
+                        <p>Automatically resolves generic-to-brand relationships and binds exact dosage strengths.</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Zero EMR Bloat</h3>
+                        <p>Stripped away all unnecessary modules to focus 100% on the clinical prescription workflow.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Confidential</span>
+            <span>03</span>
+        </div>
+    </div>
+
+    <!-- Slide 4: Screen - Login -->
+    <div class="page screen-slide">
+        <div class="screen-header">
+            <h2>01. Secure Gateway</h2>
+            <p>Role-Based Access Control (RBAC) ensuring strict data isolation.</p>
+        </div>
+        <div class="screen-container">
+            <!-- Ensure local file paths are constructed correctly for Windows absolute path -->
+            <img src="file:///C:/Users/91950/Documents/Shivaram/RxNXT/rxnxt-ui-ux-images/01-login.png" alt="Login Screen" onerror="this.src='https://via.placeholder.com/1200x800?text=Login+Screen+Image+Not+Found'">
+        </div>
+        <div class="footer" style="position: relative; bottom: 0; left: 60px; right: 60px; margin-bottom: 30px;">
+            <span>Confidential</span>
+            <span>04</span>
+        </div>
+    </div>
+
+    <!-- Slide 5: Screen - Reception -->
+    <div class="page screen-slide">
+        <div class="screen-header">
+            <h2>02. Clinic Reception Portal</h2>
+            <p>Rapid patient onboarding and queue management.</p>
+        </div>
+        <div class="screen-container">
+            <img src="file:///C:/Users/91950/Documents/Shivaram/RxNXT/rxnxt-ui-ux-images/02-reception-portal.png" alt="Reception Portal" onerror="this.src='https://via.placeholder.com/1200x800?text=Reception+Portal+Image+Not+Found'">
+        </div>
+        <div class="footer" style="position: relative; bottom: 0; left: 60px; right: 60px; margin-bottom: 30px;">
+            <span>Confidential</span>
+            <span>05</span>
+        </div>
+    </div>
+
+    <!-- Slide 6: Screen - Doctor Rx -->
+    <div class="page screen-slide">
+        <div class="screen-header">
+            <h2>03. Doctor Rx Creation Workspace</h2>
+            <p>The core engine. Lightning-fast drug search, favorite lists, and 1-click PDF generation.</p>
+        </div>
+        <div class="screen-container">
+            <img src="file:///C:/Users/91950/Documents/Shivaram/RxNXT/rxnxt-ui-ux-images/03-doctor-rx-creation.png" alt="Doctor Rx Creation" onerror="this.src='https://via.placeholder.com/1200x800?text=Doctor+Rx+Creation+Image+Not+Found'">
+        </div>
+        <div class="footer" style="position: relative; bottom: 0; left: 60px; right: 60px; margin-bottom: 30px;">
+            <span>Confidential</span>
+            <span>06</span>
+        </div>
+    </div>
+
+    <!-- Slide 7: Screen - Pharmacy -->
+    <div class="page screen-slide">
+        <div class="screen-header">
+            <h2>04. Pharmacy Screen</h2>
+            <p>Legible, verified digital prescriptions ensuring 100% dispensing accuracy.</p>
+        </div>
+        <div class="screen-container">
+            <img src="file:///C:/Users/91950/Documents/Shivaram/RxNXT/rxnxt-ui-ux-images/04-pharmacy-screen.png" alt="Pharmacy Screen" onerror="this.src='https://via.placeholder.com/1200x800?text=Pharmacy+Screen+Image+Not+Found'">
+        </div>
+        <div class="footer" style="position: relative; bottom: 0; left: 60px; right: 60px; margin-bottom: 30px;">
+            <span>Confidential</span>
+            <span>07</span>
+        </div>
+    </div>
+
+    <!-- Slide 8: Tech & Architecture -->
+    <div class="page content-slide bg-gradient bg-pattern">
+        <div class="header" style="border-bottom-color: rgba(255,255,255,0.1);">
+            <h2 style="color: white;">Technology & Deployment Status</h2>
+            <div class="logo" style="color: rgba(255,255,255,0.5);">RxNXT</div>
+        </div>
+        <div class="split-layout">
+            <div class="text-content" style="color: #cbd5e1;">
+                <p style="color: white; font-weight: 600; font-size: 1.5rem; margin-bottom: 20px;">Deployment Readiness Score: 100/100</p>
+                <ul>
+                    <li><strong style="color: var(--accent);">Frontend:</strong> Next.js 14 (App Router), React 18, Tailwind CSS</li>
+                    <li><strong style="color: var(--accent);">Backend & Auth:</strong> PostgreSQL via Supabase</li>
+                    <li><strong style="color: var(--accent);">Security:</strong> Zero-Trust APIs & Row-Level Security (RLS)</li>
+                    <li><strong style="color: var(--accent);">Infrastructure:</strong> Vercel Edge Network, GitHub Actions (CI/CD)</li>
+                </ul>
+                <div style="margin-top: 40px; padding: 20px; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; background: rgba(0,0,0,0.2);">
+                    <h4 style="color: white; margin-bottom: 10px;">Future AI Roadmap</h4>
+                    <p style="font-size: 1.1rem;">Schema engineered to support AI Prescription Suggestions, Drug Interaction Warnings, and Generic Brand Recommendations.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Confidential</span>
+            <span>08</span>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxNXT — Smart Prescription Workspace</title>
+    <meta name="description" content="RxNXT DiPiro-powered Smart Prescription Workspace prototype with AI drug suggestions">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN SYSTEM
+        ═══════════════════════════════════════════ */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2035;
+            --bg-card-hover: #1e2740;
+            --bg-input: #0d1321;
+            --border: #2a3450;
+            --border-focus: #6366f1;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-indigo: #6366f1;
+            --accent-indigo-soft: rgba(99, 102, 241, 0.15);
+            --accent-emerald: #10b981;
+            --accent-emerald-soft: rgba(16, 185, 129, 0.12);
+            --accent-amber: #f59e0b;
+            --accent-amber-soft: rgba(245, 158, 11, 0.12);
+            --accent-rose: #f43f5e;
+            --accent-rose-soft: rgba(244, 63, 94, 0.12);
+            --accent-cyan: #06b6d4;
+            --accent-cyan-soft: rgba(6, 182, 212, 0.12);
+            --gradient-brand: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+            --gradient-emerald: linear-gradient(135deg, #059669, #10b981);
+            --gradient-card: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.03));
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════
+           BACKGROUND EFFECTS
+        ═══════════════════════════════════════════ */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════════
+           HEADER
+        ═══════════════════════════════════════════ */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-brand);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: white;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .autopilot-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--accent-emerald-soft);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-emerald);
+            animation: pulse-badge 3s ease-in-out infinite;
+        }
+
+        .autopilot-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.1); }
+            50% { box-shadow: 0 0 15px 0 rgba(16, 185, 129, 0.08); }
+        }
+
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .doctor-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .doctor-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .doctor-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════
+           MAIN LAYOUT
+        ═══════════════════════════════════════════ */
+        .workspace {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* ═══════════════════════════════════════════
+           LEFT PANEL — PRESCRIPTION WORKSPACE
+        ═══════════════════════════════════════════ */
+        .workspace-main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .section-card:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .section-title .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* ── Patient Info Bar ── */
+        .patient-bar {
+            background: var(--gradient-card);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 24px;
+            flex-direction: row;
+        }
+
+        .patient-avatar-lg {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1, #a78bfa);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .patient-details {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .patient-meta span {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .patient-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tag-kidney {
+            background: var(--accent-amber-soft);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        /* ── Clinical Details Section ── */
+        .clinical-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-textarea {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 0 3px var(--accent-indigo-soft);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* ── Diagnosis Input with Magic ── */
+        .diagnosis-wrapper {
+            position: relative;
+        }
+
+        .diagnosis-input {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            padding-right: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            width: 100%;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .diagnosis-input:focus {
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 0 4px var(--accent-indigo-soft), var(--shadow-glow);
+        }
+
+        .diagnosis-input.has-suggestions {
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 0 4px var(--accent-emerald-soft), 0 0 25px rgba(16, 185, 129, 0.1);
+        }
+
+        .diagnosis-ai-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--transition);
+            opacity: 0.4;
+        }
+
+        .diagnosis-ai-icon.active {
+            background: var(--accent-emerald-soft);
+            opacity: 1;
+            animation: icon-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes icon-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.15); }
+        }
+
+        /* ── Diagnosis Dropdown ── */
+        .diagnosis-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 50;
+            max-height: 260px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .diagnosis-dropdown.visible {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .diagnosis-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .diagnosis-option:hover {
+            background: var(--accent-indigo-soft);
+            color: var(--text-primary);
+        }
+
+        .diagnosis-option .diag-icon {
+            font-size: 16px;
+        }
+
+        /* ═══════════════════════════════════════════
+           AI SUGGESTION PANEL
+        ═══════════════════════════════════════════ */
+        .ai-suggestions {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .ai-suggestions.visible {
+            display: block;
+            animation: fadeSlideUp 0.4s ease-out;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .ai-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-spark {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-emerald);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .ai-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-emerald);
+        }
+
+        .ai-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .ai-source {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: rgba(100, 116, 139, 0.1);
+            padding: 4px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        .ai-dismiss {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .ai-dismiss:hover {
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+            background: var(--accent-rose-soft);
+        }
+
+        /* ── Drug Suggestion Cards ── */
+        .suggestion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .suggestion-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .suggestion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-indigo);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .suggestion-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: var(--bg-card-hover);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .suggestion-card:hover::before {
+            opacity: 1;
+        }
+
+        .suggestion-card.first-line::before {
+            background: var(--accent-emerald);
+            opacity: 1;
+        }
+
+        .suggestion-card.added {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: var(--accent-emerald-soft);
+        }
+
+        .suggestion-card.added::before {
+            background: var(--accent-emerald);
+            opacity: 1;
+        }
+
+        .suggestion-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .rank-first {
+            background: var(--accent-emerald-soft);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .rank-alt {
+            background: var(--accent-indigo-soft);
+            color: var(--accent-indigo);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .suggestion-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .suggestion-drug-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .suggestion-generic {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .suggestion-dosing {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dose-chip {
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--accent-indigo);
+            border: 1px solid rgba(99, 102, 241, 0.12);
+        }
+
+        .dose-chip.strength {
+            background: var(--accent-cyan-soft);
+            color: var(--accent-cyan);
+            border-color: rgba(6, 182, 212, 0.15);
+        }
+
+        .dose-chip.freq {
+            background: var(--accent-amber-soft);
+            color: var(--accent-amber);
+            border-color: rgba(245, 158, 11, 0.15);
+        }
+
+        .suggestion-line-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .tag-1st {
+            background: var(--accent-emerald-soft);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .tag-2nd {
+            background: var(--accent-indigo-soft);
+            color: var(--accent-indigo);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .tag-addon {
+            background: var(--accent-amber-soft);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .suggestion-add-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent-indigo-soft);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--accent-indigo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .suggestion-add-btn:hover {
+            background: var(--accent-indigo);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .suggestion-add-btn.added {
+            background: var(--accent-emerald);
+            border-color: var(--accent-emerald);
+            color: white;
+            pointer-events: none;
+        }
+
+        .add-all-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px dashed rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-md);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-indigo);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-all-btn:hover {
+            background: var(--accent-indigo-soft);
+            border-style: solid;
+            border-color: var(--accent-indigo);
+        }
+
+        /* ═══════════════════════════════════════════
+           MANUAL DRUG SEARCH
+        ═══════════════════════════════════════════ */
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 16px 12px 42px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 0 3px var(--accent-indigo-soft);
+        }
+
+        /* ═══════════════════════════════════════════
+           RIGHT PANEL — PRESCRIPTION CART
+        ═══════════════════════════════════════════ */
+        .cart-panel {
+            position: sticky;
+            top: 88px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: calc(100vh - 112px);
+        }
+
+        .cart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .cart-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-icon {
+            font-size: 18px;
+        }
+
+        .cart-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+        }
+
+        .cart-count {
+            padding: 2px 10px;
+            background: var(--accent-indigo);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+            text-align: center;
+        }
+
+        .cart-empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        .cart-empty-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .cart-empty-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .cart-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            animation: fadeSlideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        .cart-item-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px;
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .cart-item-remove:hover {
+            color: var(--accent-rose);
+        }
+
+        .cart-item-details {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cart-item-chip {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .chip-form {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--accent-indigo);
+        }
+
+        .chip-dose {
+            background: var(--accent-cyan-soft);
+            color: var(--accent-cyan);
+        }
+
+        .chip-freq {
+            background: var(--accent-amber-soft);
+            color: var(--accent-amber);
+        }
+
+        .chip-dur {
+            background: var(--accent-emerald-soft);
+            color: var(--accent-emerald);
+        }
+
+        .cart-item-ai-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--accent-emerald);
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* ── Cart Footer ── */
+        .cart-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-brand);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-save:hover {
+            border-color: var(--accent-indigo);
+            color: var(--accent-indigo);
+            background: var(--accent-indigo-soft);
+        }
+
+        /* ═══════════════════════════════════════════
+           CONTROL BANNER
+        ═══════════════════════════════════════════ */
+        .control-banner {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(139, 92, 246, 0.04));
+            border: 1px solid rgba(99, 102, 241, 0.12);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .control-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .control-text {
+            flex: 1;
+        }
+
+        .control-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .control-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ═══════════════════════════════════════════
+           INTERACTION WARNING
+        ═══════════════════════════════════════════ */
+        .interaction-warning {
+            display: none;
+            background: var(--accent-amber-soft);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+
+        .interaction-warning.visible {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .interaction-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .interaction-text {
+            font-size: 12px;
+            color: var(--accent-amber);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .interaction-dismiss {
+            background: none;
+            border: none;
+            color: var(--accent-amber);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        .interaction-dismiss:hover {
+            opacity: 1;
+        }
+
+        /* ═══════════════════════════════════════════
+           TYPING INDICATOR
+        ═══════════════════════════════════════════ */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+        }
+
+        .typing-indicator.visible {
+            display: flex;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        .typing-text {
+            font-size: 12px;
+            color: var(--accent-emerald);
+            font-weight: 500;
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLLBAR
+        ═══════════════════════════════════════════ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.3);
+            border-radius: 100px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .workspace {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+            .cart-panel {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           SUCCESS TOAST
+        ═══════════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: var(--bg-card);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-emerald);
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(16, 185, 129, 0.1);
+            z-index: 200;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="header">
+        <div class="logo-group">
+            <div class="logo-icon">Rx</div>
+            <span class="logo-text">RxNXT</span>
+            <div class="autopilot-badge">
+                <div class="autopilot-dot"></div>
+                Smart Assist ON
+            </div>
+        </div>
+        <div class="doctor-info">
+            <div>
+                <div class="doctor-name">Dr. Shivaram</div>
+                <div class="doctor-role">General Medicine</div>
+            </div>
+            <div class="doctor-avatar">DS</div>
+        </div>
+    </header>
+
+    <!-- ═══ WORKSPACE ═══ -->
+    <main class="workspace">
+
+        <!-- ── LEFT: Prescription Workspace ── -->
+        <div class="workspace-main">
+
+            <!-- Patient Bar -->
+            <div class="section-card patient-bar">
+                <div class="patient-avatar-lg">RP</div>
+                <div class="patient-details">
+                    <div class="patient-name">Ramesh Patel</div>
+                    <div class="patient-meta">
+                        <span>👤 Male, 58 yrs</span>
+                        <span>📞 +91 98765 43210</span>
+                        <span>📅 Visit #4</span>
+                    </div>
+                </div>
+                <span class="patient-tag tag-kidney">⚠️ eGFR: 42</span>
+            </div>
+
+            <!-- Clinical Details -->
+            <div class="section-card">
+                <div class="section-title">
+                    <div class="icon" style="background: var(--accent-indigo-soft); color: var(--accent-indigo);">🩺</div>
+                    Clinical Details
+                </div>
+
+                <div class="clinical-grid">
+                    <div class="form-group">
+                        <label class="form-label">Chief Complaint</label>
+                        <input type="text" class="form-input" value="Headache, elevated BP on last visit" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vitals — BP</label>
+                        <input type="text" class="form-input" value="158/96 mmHg" readonly>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Diagnosis</label>
+                        <div class="diagnosis-wrapper">
+                            <input 
+                                type="text" 
+                                class="diagnosis-input" 
+                                id="diagnosisInput"
+                                placeholder="Type diagnosis — e.g., Hypertension, Diabetes..."
+                                autocomplete="off"
+                            >
+                            <div class="diagnosis-ai-icon" id="aiIcon">🧠</div>
+                            <div class="diagnosis-dropdown" id="diagnosisDropdown"></div>
+                        </div>
+
+                        <!-- Typing indicator -->
+                        <div class="typing-indicator" id="typingIndicator">
+                            <div class="typing-dots">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                            <span class="typing-text">RxNXT is finding recommended drugs...</span>
+                        </div>
+
+                        <!-- AI Suggestions -->
+                        <div class="ai-suggestions" id="aiSuggestions"></div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" placeholder="Additional clinical notes..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Drug Search -->
+            <div class="section-card">
+                <div class="section-title">
+                    <div class="icon" style="background: var(--accent-cyan-soft); color: var(--accent-cyan);">💊</div>
+                    Search Medicines
+                </div>
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search any medicine — e.g., Paracetamol, Amoxicillin..." id="manualSearch">
+                </div>
+            </div>
+
+            <!-- Control Banner -->
+            <div class="control-banner">
+                <div class="control-icon">🛡️</div>
+                <div class="control-text">
+                    <div class="control-title">You're always in control</div>
+                    <div class="control-desc">Suggestions are based on clinical guidelines. You can accept, modify, or dismiss any recommendation. RxNXT assists — the doctor decides.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── RIGHT: Prescription Cart ── -->
+        <div class="cart-panel">
+            <div class="cart-card">
+                <div class="cart-header">
+                    <div class="cart-header-left">
+                        <span class="cart-icon">🛒</span>
+                        <span class="cart-title">Prescription</span>
+                    </div>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <div class="cart-items" id="cartItems">
+                    <div class="cart-empty" id="cartEmpty">
+                        <div class="cart-empty-icon">📋</div>
+                        <div class="cart-empty-text">No medicines yet</div>
+                        <div class="cart-empty-hint">Type a diagnosis to get smart suggestions</div>
+                    </div>
+                </div>
+
+                <div class="interaction-warning" id="interactionWarning">
+                    <span class="interaction-icon">⚠️</span>
+                    <span class="interaction-text" id="interactionText"></span>
+                    <button class="interaction-dismiss" onclick="dismissInteraction()">✕</button>
+                </div>
+
+                <div class="cart-footer">
+                    <button class="btn-generate" id="btnGenerate" onclick="generatePDF()">
+                        📄 Generate Prescription PDF
+                    </button>
+                    <button class="btn-save">💾 Save & Close Encounter</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span>✅</span>
+        <span id="toastText">Added to prescription</span>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════
+        // DiPiro-backed Disease → Drug Protocol Database
+        // ═══════════════════════════════════════════
+        const protocols = {
+            // ═══════════════════════════════════════
+            // CARDIOVASCULAR
+            // ═══════════════════════════════════════
+            "Hypertension": {
+                icon: "🫀",
+                drugs: [
+                    { name: "Telmisartan", generic: "ARB — Angiotensin Receptor Blocker", form: "Tablet", strength: "40mg", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Amlodipine", generic: "CCB — Calcium Channel Blocker", form: "Tablet", strength: "5mg", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Losartan", generic: "ARB — Alternative", form: "Tablet", strength: "50mg", freq: "Once daily", duration: "Ongoing", line: "2nd Line", rank: "alt" },
+                    { name: "Hydrochlorothiazide", generic: "Thiazide Diuretic", form: "Tablet", strength: "12.5mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Metoprolol", generic: "Beta Blocker — for tachycardia", form: "Tablet", strength: "25mg", freq: "Twice daily", duration: "Ongoing", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Heart Failure": {
+                icon: "💔",
+                drugs: [
+                    { name: "Enalapril", generic: "ACE Inhibitor", form: "Tablet", strength: "5mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Carvedilol", generic: "Beta Blocker (HF-specific)", form: "Tablet", strength: "3.125mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Furosemide", generic: "Loop Diuretic — for fluid overload", form: "Tablet", strength: "40mg", freq: "Once daily", duration: "As needed", line: "1st Line", rank: "first" },
+                    { name: "Spironolactone", generic: "Aldosterone Antagonist", form: "Tablet", strength: "25mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Sacubitril/Valsartan", generic: "ARNI — Replaces ACEi if tolerated", form: "Tablet", strength: "50mg", freq: "Twice daily", duration: "Ongoing", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Dyslipidemia": {
+                icon: "🩸",
+                drugs: [
+                    { name: "Atorvastatin", generic: "HMG-CoA Reductase Inhibitor (Statin)", form: "Tablet", strength: "10mg", freq: "Once daily (at night)", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Rosuvastatin", generic: "Statin — Higher potency", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Fenofibrate", generic: "Fibrate — for high triglycerides", form: "Tablet", strength: "160mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Ezetimibe", generic: "Cholesterol Absorption Inhibitor", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Angina Pectoris": {
+                icon: "💗",
+                drugs: [
+                    { name: "Aspirin", generic: "Antiplatelet Agent", form: "Tablet", strength: "75mg", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Atorvastatin", generic: "Statin — Cardioprotective", form: "Tablet", strength: "40mg", freq: "Once daily (at night)", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Metoprolol", generic: "Beta Blocker — Rate control", form: "Tablet", strength: "50mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Isosorbide Mononitrate", generic: "Nitrate — Anginal relief", form: "Tablet", strength: "30mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Clopidogrel", generic: "Antiplatelet — Dual therapy", form: "Tablet", strength: "75mg", freq: "Once daily", duration: "12 months", line: "Add-on", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // ENDOCRINE
+            // ═══════════════════════════════════════
+            "Type 2 Diabetes": {
+                icon: "💉",
+                drugs: [
+                    { name: "Metformin", generic: "Biguanide — Insulin Sensitizer", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Glimepiride", generic: "Sulfonylurea", form: "Tablet", strength: "1mg", freq: "Once daily (before breakfast)", duration: "Ongoing", line: "2nd Line", rank: "alt" },
+                    { name: "Dapagliflozin", generic: "SGLT2 Inhibitor — Cardio-renal benefit", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Sitagliptin", generic: "DPP-4 Inhibitor", form: "Tablet", strength: "100mg", freq: "Once daily", duration: "Ongoing", line: "2nd Line", rank: "alt" },
+                    { name: "Voglibose", generic: "Alpha-Glucosidase Inhibitor", form: "Tablet", strength: "0.3mg", freq: "Thrice daily (with meals)", duration: "Ongoing", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Hypothyroidism": {
+                icon: "🦋",
+                drugs: [
+                    { name: "Levothyroxine", generic: "Synthetic T4 — Thyroid Hormone Replacement", form: "Tablet", strength: "50mcg", freq: "Once daily (empty stomach, 30 min before food)", duration: "Lifelong", line: "1st Line", rank: "first" }
+                ]
+            },
+            "Hyperthyroidism": {
+                icon: "🔥",
+                drugs: [
+                    { name: "Carbimazole", generic: "Antithyroid — Thionamide", form: "Tablet", strength: "10mg", freq: "Thrice daily", duration: "12-18 months", line: "1st Line", rank: "first" },
+                    { name: "Propranolol", generic: "Beta Blocker — Symptom control", form: "Tablet", strength: "40mg", freq: "Thrice daily", duration: "Until euthyroid", line: "1st Line", rank: "first" },
+                    { name: "Methimazole", generic: "Antithyroid — Alternative", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "12-18 months", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // GASTROINTESTINAL
+            // ═══════════════════════════════════════
+            "Acid Reflux / GERD": {
+                icon: "🔥",
+                drugs: [
+                    { name: "Pantoprazole", generic: "Proton Pump Inhibitor", form: "Tablet", strength: "40mg", freq: "Once daily (before breakfast)", duration: "4-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Domperidone", generic: "Prokinetic Agent", form: "Tablet", strength: "10mg", freq: "Thrice daily (before meals)", duration: "2-4 weeks", line: "Add-on", rank: "alt" },
+                    { name: "Ranitidine", generic: "H2 Receptor Antagonist", form: "Tablet", strength: "150mg", freq: "Twice daily", duration: "4 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Acute Gastroenteritis": {
+                icon: "🤢",
+                drugs: [
+                    { name: "ORS", generic: "Oral Rehydration Salts", form: "Sachet", strength: "1 sachet in 1L water", freq: "Sip frequently", duration: "Until resolved", line: "1st Line", rank: "first" },
+                    { name: "Ondansetron", generic: "5-HT3 Antagonist — Antiemetic", form: "Tablet", strength: "4mg", freq: "Twice daily", duration: "2-3 days", line: "1st Line", rank: "first" },
+                    { name: "Racecadotril", generic: "Antisecretory — Reduces fluid loss", form: "Capsule", strength: "100mg", freq: "Thrice daily", duration: "3-5 days", line: "Add-on", rank: "alt" },
+                    { name: "Zinc", generic: "Micronutrient Supplement", form: "Tablet", strength: "20mg", freq: "Once daily", duration: "10-14 days", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Irritable Bowel Syndrome": {
+                icon: "😣",
+                drugs: [
+                    { name: "Mebeverine", generic: "Antispasmodic", form: "Tablet", strength: "135mg", freq: "Thrice daily (before meals)", duration: "4-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Rifaximin", generic: "Non-absorbable Antibiotic (IBS-D)", form: "Tablet", strength: "550mg", freq: "Thrice daily", duration: "14 days", line: "1st Line", rank: "first" },
+                    { name: "Psyllium Husk", generic: "Bulk-forming Laxative (IBS-C)", form: "Powder", strength: "1 teaspoon", freq: "Twice daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Amitriptyline", generic: "Low-dose TCA — Visceral pain", form: "Tablet", strength: "10mg", freq: "Once daily (at bedtime)", duration: "8-12 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Peptic Ulcer Disease": {
+                icon: "🔴",
+                drugs: [
+                    { name: "Pantoprazole", generic: "Proton Pump Inhibitor", form: "Tablet", strength: "40mg", freq: "Twice daily", duration: "4-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Amoxicillin", generic: "Penicillin — H. pylori triple therapy", form: "Capsule", strength: "1000mg", freq: "Twice daily", duration: "14 days", line: "1st Line", rank: "first" },
+                    { name: "Clarithromycin", generic: "Macrolide — H. pylori triple therapy", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "14 days", line: "1st Line", rank: "first" },
+                    { name: "Sucralfate", generic: "Mucosal Protectant", form: "Tablet", strength: "1g", freq: "Four times daily (before meals)", duration: "4-8 weeks", line: "Add-on", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // RESPIRATORY
+            // ═══════════════════════════════════════
+            "Asthma": {
+                icon: "🫁",
+                drugs: [
+                    { name: "Salbutamol MDI", generic: "Short-acting β2 Agonist (Reliever)", form: "Inhaler", strength: "100mcg/puff", freq: "2 puffs as needed", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Budesonide", generic: "Inhaled Corticosteroid (Controller)", form: "Inhaler", strength: "200mcg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Montelukast", generic: "Leukotriene Receptor Antagonist", form: "Tablet", strength: "10mg", freq: "Once daily (at night)", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Prednisolone", generic: "Systemic Corticosteroid (Acute)", form: "Tablet", strength: "40mg", freq: "Once daily", duration: "5 days", line: "Acute", rank: "alt" }
+                ]
+            },
+            "COPD": {
+                icon: "🌬️",
+                drugs: [
+                    { name: "Tiotropium", generic: "LAMA — Long-acting Anticholinergic", form: "Inhaler", strength: "18mcg", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Formoterol + Budesonide", generic: "LABA + ICS Combination", form: "Inhaler", strength: "6/200mcg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Salbutamol MDI", generic: "SABA — Rescue inhaler", form: "Inhaler", strength: "100mcg/puff", freq: "2 puffs as needed", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Theophylline", generic: "Methylxanthine Bronchodilator", form: "Tablet", strength: "300mg", freq: "Twice daily", duration: "Ongoing", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Pneumonia": {
+                icon: "🦠",
+                drugs: [
+                    { name: "Amoxicillin", generic: "Penicillin Antibiotic", form: "Capsule", strength: "500mg", freq: "Thrice daily", duration: "5-7 days", line: "1st Line", rank: "first" },
+                    { name: "Azithromycin", generic: "Macrolide — Atypical coverage", form: "Tablet", strength: "500mg", freq: "Once daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Amoxicillin-Clavulanate", generic: "Augmented Penicillin", form: "Tablet", strength: "625mg", freq: "Thrice daily", duration: "7 days", line: "2nd Line", rank: "alt" },
+                    { name: "Levofloxacin", generic: "Respiratory Fluoroquinolone", form: "Tablet", strength: "500mg", freq: "Once daily", duration: "5-7 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Upper Respiratory Infection": {
+                icon: "🤒",
+                drugs: [
+                    { name: "Paracetamol", generic: "Antipyretic / Analgesic", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Cetirizine", generic: "2nd-gen Antihistamine", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "5 days", line: "1st Line", rank: "first" },
+                    { name: "Dextromethorphan", generic: "Antitussive — Cough suppressant", form: "Syrup", strength: "15mg/5ml", freq: "Thrice daily", duration: "5 days", line: "Add-on", rank: "alt" },
+                    { name: "Ambroxol", generic: "Mucolytic — Chest congestion", form: "Syrup", strength: "30mg/5ml", freq: "Thrice daily", duration: "5 days", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Allergic Rhinitis": {
+                icon: "🤧",
+                drugs: [
+                    { name: "Cetirizine", generic: "2nd-gen Antihistamine", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Fluticasone Nasal Spray", generic: "Intranasal Corticosteroid", form: "Nasal Spray", strength: "50mcg/spray", freq: "2 sprays each nostril daily", duration: "4-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Montelukast", generic: "Leukotriene Receptor Antagonist", form: "Tablet", strength: "10mg", freq: "Once daily (at night)", duration: "4 weeks", line: "Add-on", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // INFECTIOUS DISEASES
+            // ═══════════════════════════════════════
+            "Urinary Tract Infection": {
+                icon: "🦠",
+                drugs: [
+                    { name: "Nitrofurantoin", generic: "Nitrofuran Antibiotic", form: "Capsule", strength: "100mg", freq: "Twice daily", duration: "5 days", line: "1st Line", rank: "first" },
+                    { name: "Ciprofloxacin", generic: "Fluoroquinolone", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "3 days", line: "2nd Line", rank: "alt" },
+                    { name: "Amoxicillin-Clavulanate", generic: "Penicillin + β-Lactamase Inhibitor", form: "Tablet", strength: "625mg", freq: "Twice daily", duration: "5-7 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Dengue Fever": {
+                icon: "🦟",
+                drugs: [
+                    { name: "Paracetamol", generic: "Antipyretic (ONLY — NO NSAIDs)", form: "Tablet", strength: "500mg", freq: "Four times daily (max 4g/day)", duration: "Until afebrile", line: "1st Line", rank: "first" },
+                    { name: "ORS", generic: "Oral Rehydration Salts", form: "Sachet", strength: "1 sachet in 1L water", freq: "Sip frequently", duration: "Until resolved", line: "1st Line", rank: "first" },
+                    { name: "IV Normal Saline", generic: "0.9% NaCl — Severe dehydration", form: "IV Fluid", strength: "1000ml", freq: "As per clinical need", duration: "Until stable", line: "Acute", rank: "alt" }
+                ]
+            },
+            "Malaria": {
+                icon: "🦟",
+                drugs: [
+                    { name: "Artemether-Lumefantrine", generic: "ACT — Artemisinin Combination", form: "Tablet", strength: "80/480mg", freq: "Twice daily", duration: "3 days", line: "1st Line", rank: "first" },
+                    { name: "Chloroquine", generic: "4-Aminoquinoline (P. vivax)", form: "Tablet", strength: "250mg", freq: "See dosing schedule", duration: "3 days", line: "1st Line", rank: "first" },
+                    { name: "Primaquine", generic: "Radical cure — Anti-relapse (P. vivax)", form: "Tablet", strength: "15mg", freq: "Once daily", duration: "14 days", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Typhoid Fever": {
+                icon: "🌡️",
+                drugs: [
+                    { name: "Cefixime", generic: "3rd-gen Cephalosporin", form: "Tablet", strength: "200mg", freq: "Twice daily", duration: "14 days", line: "1st Line", rank: "first" },
+                    { name: "Azithromycin", generic: "Macrolide — Alternative", form: "Tablet", strength: "500mg", freq: "Once daily", duration: "7 days", line: "1st Line", rank: "first" },
+                    { name: "Ofloxacin", generic: "Fluoroquinolone (if sensitive)", form: "Tablet", strength: "200mg", freq: "Twice daily", duration: "10-14 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Skin & Soft Tissue Infection": {
+                icon: "🩹",
+                drugs: [
+                    { name: "Cephalexin", generic: "1st-gen Cephalosporin", form: "Capsule", strength: "500mg", freq: "Four times daily", duration: "7-10 days", line: "1st Line", rank: "first" },
+                    { name: "Amoxicillin-Clavulanate", generic: "Augmented Penicillin", form: "Tablet", strength: "625mg", freq: "Thrice daily", duration: "7 days", line: "1st Line", rank: "first" },
+                    { name: "Clindamycin", generic: "Lincosamide — MRSA coverage", form: "Capsule", strength: "300mg", freq: "Four times daily", duration: "7-10 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Fungal Infection": {
+                icon: "🍄",
+                drugs: [
+                    { name: "Fluconazole", generic: "Triazole Antifungal", form: "Tablet", strength: "150mg", freq: "Once weekly", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Clotrimazole Cream", generic: "Topical Azole Antifungal", form: "Cream", strength: "1%", freq: "Twice daily (apply to area)", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Terbinafine", generic: "Allylamine Antifungal", form: "Tablet", strength: "250mg", freq: "Once daily", duration: "2-6 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // MUSCULOSKELETAL
+            // ═══════════════════════════════════════
+            "Osteoarthritis": {
+                icon: "🦴",
+                drugs: [
+                    { name: "Paracetamol", generic: "Analgesic — First-line pain relief", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "As needed", line: "1st Line", rank: "first" },
+                    { name: "Diclofenac", generic: "NSAID — Anti-inflammatory", form: "Tablet", strength: "50mg", freq: "Twice daily (with food)", duration: "1-2 weeks", line: "1st Line", rank: "first" },
+                    { name: "Pantoprazole", generic: "PPI — Gastroprotection with NSAID", form: "Tablet", strength: "40mg", freq: "Once daily", duration: "With NSAID", line: "Add-on", rank: "alt" },
+                    { name: "Glucosamine", generic: "Chondroprotective Supplement", form: "Tablet", strength: "1500mg", freq: "Once daily", duration: "3-6 months", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Rheumatoid Arthritis": {
+                icon: "🖐️",
+                drugs: [
+                    { name: "Methotrexate", generic: "DMARD — Anchor drug", form: "Tablet", strength: "7.5mg", freq: "Once weekly", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Folic Acid", generic: "Folate supplement — MTX side effect prevention", form: "Tablet", strength: "5mg", freq: "Once weekly (day after MTX)", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Hydroxychloroquine", generic: "DMARD — Mild disease / Add-on", form: "Tablet", strength: "200mg", freq: "Twice daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Prednisolone", generic: "Bridging steroid — Short course", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "4-6 weeks taper", line: "Acute", rank: "alt" }
+                ]
+            },
+            "Gout": {
+                icon: "🦶",
+                drugs: [
+                    { name: "Colchicine", generic: "Anti-inflammatory — Acute gout", form: "Tablet", strength: "0.5mg", freq: "Twice daily", duration: "Until attack resolves", line: "1st Line", rank: "first" },
+                    { name: "Naproxen", generic: "NSAID — Acute pain relief", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "5-7 days", line: "1st Line", rank: "first" },
+                    { name: "Allopurinol", generic: "Xanthine Oxidase Inhibitor — Urate lowering", form: "Tablet", strength: "100mg", freq: "Once daily (start low)", duration: "Lifelong", line: "Prevention", rank: "alt" },
+                    { name: "Febuxostat", generic: "Xanthine Oxidase Inhibitor — Alternative", form: "Tablet", strength: "40mg", freq: "Once daily", duration: "Lifelong", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Low Back Pain": {
+                icon: "🔙",
+                drugs: [
+                    { name: "Paracetamol", generic: "Analgesic — First-line", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "5-7 days", line: "1st Line", rank: "first" },
+                    { name: "Ibuprofen", generic: "NSAID — Anti-inflammatory", form: "Tablet", strength: "400mg", freq: "Thrice daily (with food)", duration: "5-7 days", line: "1st Line", rank: "first" },
+                    { name: "Thiocolchicoside", generic: "Muscle Relaxant", form: "Capsule", strength: "4mg", freq: "Twice daily", duration: "5-7 days", line: "Add-on", rank: "alt" },
+                    { name: "Pregabalin", generic: "Gabapentinoid — Neuropathic pain", form: "Capsule", strength: "75mg", freq: "Twice daily", duration: "4-8 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // NEUROLOGY & PSYCHIATRY
+            // ═══════════════════════════════════════
+            "Migraine": {
+                icon: "🤕",
+                drugs: [
+                    { name: "Sumatriptan", generic: "5-HT1 Receptor Agonist (Triptan)", form: "Tablet", strength: "50mg", freq: "As needed (max 2/day)", duration: "Acute", line: "1st Line", rank: "first" },
+                    { name: "Naproxen", generic: "NSAID — Anti-inflammatory", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Propranolol", generic: "Beta Blocker — Prophylaxis", form: "Tablet", strength: "40mg", freq: "Twice daily", duration: "3-6 months", line: "Prevention", rank: "alt" },
+                    { name: "Amitriptyline", generic: "TCA — Prophylaxis alternative", form: "Tablet", strength: "10mg", freq: "Once daily (at bedtime)", duration: "3-6 months", line: "Prevention", rank: "alt" }
+                ]
+            },
+            "Epilepsy": {
+                icon: "⚡",
+                drugs: [
+                    { name: "Levetiracetam", generic: "Broad-spectrum Antiepileptic", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Sodium Valproate", generic: "Antiepileptic — Generalized seizures", form: "Tablet", strength: "300mg", freq: "Twice daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Carbamazepine", generic: "Antiepileptic — Focal seizures", form: "Tablet", strength: "200mg", freq: "Twice daily", duration: "Ongoing", line: "2nd Line", rank: "alt" },
+                    { name: "Phenytoin", generic: "Hydantoin Antiepileptic", form: "Tablet", strength: "100mg", freq: "Thrice daily", duration: "Ongoing", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Depression": {
+                icon: "🧠",
+                drugs: [
+                    { name: "Escitalopram", generic: "SSRI — Selective Serotonin Reuptake Inhibitor", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "6-12 months", line: "1st Line", rank: "first" },
+                    { name: "Sertraline", generic: "SSRI — Alternative", form: "Tablet", strength: "50mg", freq: "Once daily", duration: "6-12 months", line: "1st Line", rank: "first" },
+                    { name: "Amitriptyline", generic: "Tricyclic Antidepressant", form: "Tablet", strength: "25mg", freq: "Once daily (at bedtime)", duration: "Ongoing", line: "2nd Line", rank: "alt" },
+                    { name: "Mirtazapine", generic: "NaSSA — With insomnia / low appetite", form: "Tablet", strength: "15mg", freq: "Once daily (at bedtime)", duration: "6-12 months", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Anxiety Disorder": {
+                icon: "😰",
+                drugs: [
+                    { name: "Escitalopram", generic: "SSRI — First-line for GAD", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "6-12 months", line: "1st Line", rank: "first" },
+                    { name: "Clonazepam", generic: "Benzodiazepine — Short-term rescue", form: "Tablet", strength: "0.25mg", freq: "Twice daily", duration: "2-4 weeks max", line: "Acute", rank: "alt" },
+                    { name: "Buspirone", generic: "5-HT1A Partial Agonist — Non-sedating", form: "Tablet", strength: "5mg", freq: "Thrice daily", duration: "4-8 weeks", line: "2nd Line", rank: "alt" },
+                    { name: "Propranolol", generic: "Beta Blocker — Performance anxiety", form: "Tablet", strength: "20mg", freq: "As needed (before event)", duration: "As needed", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Insomnia": {
+                icon: "😴",
+                drugs: [
+                    { name: "Melatonin", generic: "Pineal Hormone — Circadian regulator", form: "Tablet", strength: "3mg", freq: "Once daily (30 min before bed)", duration: "4-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Zolpidem", generic: "Non-benzodiazepine Hypnotic", form: "Tablet", strength: "5mg", freq: "Once daily (at bedtime)", duration: "2-4 weeks max", line: "2nd Line", rank: "alt" },
+                    { name: "Hydroxyzine", generic: "Antihistamine — Mild sedative", form: "Tablet", strength: "25mg", freq: "Once daily (at bedtime)", duration: "2-4 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // DERMATOLOGY
+            // ═══════════════════════════════════════
+            "Acne Vulgaris": {
+                icon: "🧴",
+                drugs: [
+                    { name: "Adapalene Gel", generic: "Topical Retinoid", form: "Gel", strength: "0.1%", freq: "Once daily (at night)", duration: "12 weeks", line: "1st Line", rank: "first" },
+                    { name: "Clindamycin Gel", generic: "Topical Antibiotic", form: "Gel", strength: "1%", freq: "Twice daily", duration: "8-12 weeks", line: "1st Line", rank: "first" },
+                    { name: "Doxycycline", generic: "Tetracycline — Moderate-severe acne", form: "Capsule", strength: "100mg", freq: "Once daily", duration: "6-8 weeks", line: "2nd Line", rank: "alt" },
+                    { name: "Benzoyl Peroxide", generic: "Topical Antimicrobial", form: "Gel", strength: "2.5%", freq: "Once daily", duration: "Ongoing", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Eczema / Dermatitis": {
+                icon: "🤲",
+                drugs: [
+                    { name: "Mometasone Cream", generic: "Topical Corticosteroid (Moderate)", form: "Cream", strength: "0.1%", freq: "Once daily (thin layer)", duration: "1-2 weeks", line: "1st Line", rank: "first" },
+                    { name: "Cetirizine", generic: "Antihistamine — Itch relief", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Emollient / Moisturizer", generic: "Skin barrier repair", form: "Cream", strength: "As needed", freq: "2-3 times daily", duration: "Ongoing", line: "Add-on", rank: "alt" },
+                    { name: "Tacrolimus Ointment", generic: "Calcineurin Inhibitor — Steroid-sparing", form: "Ointment", strength: "0.1%", freq: "Twice daily", duration: "2-4 weeks", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Urticaria": {
+                icon: "🔴",
+                drugs: [
+                    { name: "Cetirizine", generic: "2nd-gen Antihistamine", form: "Tablet", strength: "10mg", freq: "Once daily", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Fexofenadine", generic: "2nd-gen Antihistamine — Non-sedating", form: "Tablet", strength: "180mg", freq: "Once daily", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Prednisolone", generic: "Systemic Steroid — Severe cases", form: "Tablet", strength: "30mg", freq: "Once daily", duration: "5 days taper", line: "Acute", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // UROLOGY & NEPHROLOGY
+            // ═══════════════════════════════════════
+            "Benign Prostatic Hyperplasia": {
+                icon: "🔵",
+                drugs: [
+                    { name: "Tamsulosin", generic: "Alpha-1 Blocker — Urinary flow improvement", form: "Capsule", strength: "0.4mg", freq: "Once daily (after meals)", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Finasteride", generic: "5-Alpha Reductase Inhibitor", form: "Tablet", strength: "5mg", freq: "Once daily", duration: "6-12 months", line: "1st Line", rank: "first" },
+                    { name: "Silodosin", generic: "Selective Alpha Blocker", form: "Capsule", strength: "8mg", freq: "Once daily", duration: "Ongoing", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Kidney Stones": {
+                icon: "💎",
+                drugs: [
+                    { name: "Diclofenac", generic: "NSAID — Renal colic pain", form: "Injection/Tablet", strength: "75mg", freq: "Twice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Tamsulosin", generic: "Alpha Blocker — Medical expulsive therapy", form: "Capsule", strength: "0.4mg", freq: "Once daily", duration: "2-4 weeks", line: "1st Line", rank: "first" },
+                    { name: "Potassium Citrate", generic: "Urine Alkalinizer — Stone prevention", form: "Tablet", strength: "1080mg", freq: "Thrice daily", duration: "3-6 months", line: "Prevention", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // GYNECOLOGY
+            // ═══════════════════════════════════════
+            "Dysmenorrhea": {
+                icon: "🩷",
+                drugs: [
+                    { name: "Mefenamic Acid", generic: "NSAID — Menstrual pain", form: "Tablet", strength: "500mg", freq: "Thrice daily (with food)", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Drotaverine", generic: "Antispasmodic", form: "Tablet", strength: "80mg", freq: "Thrice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Dicyclomine", generic: "Anticholinergic Antispasmodic", form: "Tablet", strength: "20mg", freq: "Thrice daily", duration: "3-5 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Iron Deficiency Anemia": {
+                icon: "🩸",
+                drugs: [
+                    { name: "Ferrous Sulfate", generic: "Oral Iron Supplement", form: "Tablet", strength: "200mg", freq: "Twice daily (empty stomach)", duration: "3-6 months", line: "1st Line", rank: "first" },
+                    { name: "Vitamin C", generic: "Ascorbic Acid — Enhances iron absorption", form: "Tablet", strength: "500mg", freq: "With each iron dose", duration: "3-6 months", line: "Add-on", rank: "first" },
+                    { name: "Folic Acid", generic: "Folate Supplement", form: "Tablet", strength: "5mg", freq: "Once daily", duration: "3-6 months", line: "Add-on", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // OPHTHALMOLOGY
+            // ═══════════════════════════════════════
+            "Conjunctivitis": {
+                icon: "👁️",
+                drugs: [
+                    { name: "Moxifloxacin Eye Drops", generic: "Topical Fluoroquinolone", form: "Eye Drops", strength: "0.5%", freq: "Four times daily", duration: "7 days", line: "1st Line", rank: "first" },
+                    { name: "Carboxymethylcellulose Eye Drops", generic: "Artificial Tears — Lubricant", form: "Eye Drops", strength: "0.5%", freq: "4-6 times daily", duration: "1-2 weeks", line: "Add-on", rank: "alt" },
+                    { name: "Fluorometholone Eye Drops", generic: "Topical Steroid — Allergic type", form: "Eye Drops", strength: "0.1%", freq: "Thrice daily", duration: "5-7 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // ENT
+            // ═══════════════════════════════════════
+            "Acute Otitis Media": {
+                icon: "👂",
+                drugs: [
+                    { name: "Amoxicillin", generic: "Penicillin — First-line antibiotic", form: "Capsule", strength: "500mg", freq: "Thrice daily", duration: "7-10 days", line: "1st Line", rank: "first" },
+                    { name: "Paracetamol", generic: "Analgesic / Antipyretic", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Amoxicillin-Clavulanate", generic: "Augmented Penicillin — Resistant cases", form: "Tablet", strength: "625mg", freq: "Twice daily", duration: "7-10 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+            "Pharyngitis / Sore Throat": {
+                icon: "🗣️",
+                drugs: [
+                    { name: "Amoxicillin", generic: "Penicillin — Strep throat", form: "Capsule", strength: "500mg", freq: "Thrice daily", duration: "10 days", line: "1st Line", rank: "first" },
+                    { name: "Paracetamol", generic: "Analgesic / Antipyretic", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "3-5 days", line: "1st Line", rank: "first" },
+                    { name: "Benzydamine Gargle", generic: "Topical NSAID — Throat pain", form: "Gargle", strength: "0.15%", freq: "3-4 times daily", duration: "5-7 days", line: "Add-on", rank: "alt" },
+                    { name: "Azithromycin", generic: "Macrolide — Penicillin allergy", form: "Tablet", strength: "500mg", freq: "Once daily", duration: "3 days", line: "2nd Line", rank: "alt" }
+                ]
+            },
+
+            // ═══════════════════════════════════════
+            // VITAMIN DEFICIENCY
+            // ═══════════════════════════════════════
+            "Vitamin D Deficiency": {
+                icon: "☀️",
+                drugs: [
+                    { name: "Cholecalciferol", generic: "Vitamin D3 — Loading dose", form: "Sachet/Capsule", strength: "60,000 IU", freq: "Once weekly", duration: "8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Cholecalciferol Maintenance", generic: "Vitamin D3 — Maintenance", form: "Tablet", strength: "1000 IU", freq: "Once daily", duration: "Ongoing", line: "1st Line", rank: "first" },
+                    { name: "Calcium Carbonate", generic: "Calcium Supplement", form: "Tablet", strength: "500mg", freq: "Twice daily", duration: "Ongoing", line: "Add-on", rank: "alt" }
+                ]
+            },
+            "Vitamin B12 Deficiency": {
+                icon: "💊",
+                drugs: [
+                    { name: "Methylcobalamin", generic: "Active Vitamin B12", form: "Tablet", strength: "1500mcg", freq: "Once daily", duration: "3-6 months", line: "1st Line", rank: "first" },
+                    { name: "Methylcobalamin Injection", generic: "IM B12 — Severe deficiency", form: "Injection", strength: "1000mcg", freq: "Alternate days × 2 weeks, then weekly", duration: "6-8 weeks", line: "1st Line", rank: "first" },
+                    { name: "Folic Acid", generic: "Folate Supplement", form: "Tablet", strength: "5mg", freq: "Once daily", duration: "3 months", line: "Add-on", rank: "alt" }
+                ]
+            }
+        };
+
+        // Known drug interactions for demo
+        const interactions = {
+            "Metformin+Dapagliflozin": { severity: "info", text: "Metformin + Dapagliflozin: Monitor for hypoglycemia. Both lower blood glucose — ensure patient is aware of symptoms." },
+            "Telmisartan+Losartan": { severity: "warning", text: "Telmisartan + Losartan: Dual ARB therapy is generally not recommended — increased risk of hyperkalemia and renal impairment." },
+            "Amlodipine+Metoprolol": { severity: "info", text: "Amlodipine + Metoprolol: May enhance hypotensive effects. Monitor BP regularly." },
+            "Aspirin+Naproxen": { severity: "warning", text: "Aspirin + Naproxen: Concurrent use increases GI bleeding risk. Use gastroprotection (PPI) if both needed." },
+            "Escitalopram+Amitriptyline": { severity: "warning", text: "Escitalopram + Amitriptyline: Risk of serotonin syndrome. Avoid combination — choose one antidepressant." },
+            "Methotrexate+Ibuprofen": { severity: "warning", text: "Methotrexate + Ibuprofen: NSAIDs reduce renal clearance of Methotrexate — risk of toxicity. Use Paracetamol instead." },
+            "Warfarin+Aspirin": { severity: "warning", text: "Warfarin + Aspirin: Significantly increased bleeding risk. Monitor INR closely if combination is essential." },
+            "Ciprofloxacin+Theophylline": { severity: "warning", text: "Ciprofloxacin + Theophylline: Ciprofloxacin inhibits CYP1A2 — may cause theophylline toxicity. Monitor levels." },
+            "Enalapril+Spironolactone": { severity: "info", text: "Enalapril + Spironolactone: Both cause potassium retention. Monitor serum K+ regularly — risk of hyperkalemia." },
+            "Carbamazepine+Sodium Valproate": { severity: "info", text: "Carbamazepine + Valproate: Complex interaction — Carbamazepine lowers Valproate levels. Monitor drug levels if combining." },
+            "Diclofenac+Metformin": { severity: "info", text: "Diclofenac + Metformin: NSAIDs may impair renal function, affecting Metformin clearance. Short courses are generally safe." },
+            "Colchicine+Clarithromycin": { severity: "warning", text: "Colchicine + Clarithromycin: Clarithromycin inhibits Colchicine metabolism — risk of life-threatening toxicity. Avoid combination." }
+        };
+
+        // ═══════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════
+        let cart = [];
+        let currentDiagnosis = '';
+
+        // ═══════════════════════════════════════════
+        // DIAGNOSIS INPUT LOGIC
+        // ═══════════════════════════════════════════
+        const diagInput = document.getElementById('diagnosisInput');
+        const diagDropdown = document.getElementById('diagnosisDropdown');
+        const aiIcon = document.getElementById('aiIcon');
+        const aiSuggestions = document.getElementById('aiSuggestions');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        diagInput.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            aiSuggestions.classList.remove('visible');
+            typingIndicator.classList.remove('visible');
+            aiIcon.classList.remove('active');
+            diagInput.classList.remove('has-suggestions');
+
+            if (val.length < 2) {
+                diagDropdown.classList.remove('visible');
+                return;
+            }
+
+            const matches = Object.keys(protocols).filter(d => d.toLowerCase().includes(val));
+            if (matches.length > 0) {
+                diagDropdown.innerHTML = matches.map(d => 
+                    `<div class="diagnosis-option" onclick="selectDiagnosis('${d}')">
+                        <span class="diag-icon">${protocols[d].icon}</span>
+                        ${d}
+                    </div>`
+                ).join('');
+                diagDropdown.classList.add('visible');
+            } else {
+                diagDropdown.classList.remove('visible');
+            }
+        });
+
+        diagInput.addEventListener('blur', function() {
+            setTimeout(() => diagDropdown.classList.remove('visible'), 200);
+        });
+
+        function selectDiagnosis(diagnosis) {
+            diagInput.value = diagnosis;
+            currentDiagnosis = diagnosis;
+            diagDropdown.classList.remove('visible');
+
+            // Show typing indicator
+            typingIndicator.classList.add('visible');
+            aiIcon.classList.add('active');
+            diagInput.classList.add('has-suggestions');
+
+            // Simulate brief AI "thinking"
+            setTimeout(() => {
+                typingIndicator.classList.remove('visible');
+                showSuggestions(diagnosis);
+            }, 1200);
+        }
+
+        function showSuggestions(diagnosis) {
+            const protocol = protocols[diagnosis];
+            if (!protocol) return;
+
+            const lineTagClass = { "1st Line": "tag-1st", "2nd Line": "tag-2nd", "Add-on": "tag-addon", "Acute": "tag-addon", "Prevention": "tag-2nd" };
+
+            let html = `
+                <div class="ai-header">
+                    <div class="ai-header-left">
+                        <div class="ai-spark">✨</div>
+                        <div>
+                            <div class="ai-title">Recommended for ${diagnosis}</div>
+                            <div class="ai-subtitle">Based on clinical guidelines • Tap + to add</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span class="ai-source">📚 Evidence-based</span>
+                        <button class="ai-dismiss" onclick="dismissSuggestions()">Dismiss</button>
+                    </div>
+                </div>
+                <div class="suggestion-list">
+            `;
+
+            protocol.drugs.forEach((drug, i) => {
+                const isAdded = cart.some(c => c.name === drug.name);
+                html += `
+                    <div class="suggestion-card ${drug.rank === 'first' ? 'first-line' : ''} ${isAdded ? 'added' : ''}" id="sug-${i}">
+                        <div class="suggestion-rank ${drug.rank === 'first' ? 'rank-first' : 'rank-alt'}">${i + 1}</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-drug-name">${drug.name}</div>
+                            <div class="suggestion-generic">${drug.generic}</div>
+                            <div class="suggestion-dosing">
+                                <span class="dose-chip">${drug.form}</span>
+                                <span class="dose-chip strength">${drug.strength}</span>
+                                <span class="dose-chip freq">${drug.freq}</span>
+                                <span class="dose-chip">${drug.duration}</span>
+                            </div>
+                        </div>
+                        <span class="suggestion-line-tag ${lineTagClass[drug.line] || 'tag-2nd'}">${drug.line}</span>
+                        <button class="suggestion-add-btn ${isAdded ? 'added' : ''}" onclick="addFromSuggestion(${i}, '${diagnosis}')" ${isAdded ? 'disabled' : ''}>
+                            ${isAdded ? '✓' : '+'}
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <button class="add-all-btn" onclick="addAllFirstLine('${diagnosis}')">⚡ Add All 1st Line Drugs</button>
+            `;
+
+            aiSuggestions.innerHTML = html;
+            aiSuggestions.classList.add('visible');
+        }
+
+        function dismissSuggestions() {
+            aiSuggestions.classList.remove('visible');
+            aiIcon.classList.remove('active');
+            diagInput.classList.remove('has-suggestions');
+        }
+
+        // ═══════════════════════════════════════════
+        // CART LOGIC
+        // ═══════════════════════════════════════════
+        function addFromSuggestion(index, diagnosis) {
+            const drug = protocols[diagnosis].drugs[index];
+            if (cart.some(c => c.name === drug.name)) return;
+
+            cart.push({ ...drug, aiSuggested: true });
+            updateCart();
+            showToast(`${drug.name} added to prescription`);
+            checkInteractions();
+
+            // Update suggestion card state
+            const sugCard = document.getElementById(`sug-${index}`);
+            if (sugCard) {
+                sugCard.classList.add('added');
+                const btn = sugCard.querySelector('.suggestion-add-btn');
+                if (btn) {
+                    btn.classList.add('added');
+                    btn.innerHTML = '✓';
+                    btn.disabled = true;
+                }
+            }
+        }
+
+        function addAllFirstLine(diagnosis) {
+            const protocol = protocols[diagnosis];
+            if (!protocol) return;
+
+            let addedCount = 0;
+            protocol.drugs.forEach((drug, i) => {
+                if (drug.line === "1st Line" && !cart.some(c => c.name === drug.name)) {
+                    cart.push({ ...drug, aiSuggested: true });
+                    addedCount++;
+
+                    const sugCard = document.getElementById(`sug-${i}`);
+                    if (sugCard) {
+                        sugCard.classList.add('added');
+                        const btn = sugCard.querySelector('.suggestion-add-btn');
+                        if (btn) { btn.classList.add('added'); btn.innerHTML = '✓'; btn.disabled = true; }
+                    }
+                }
+            });
+
+            if (addedCount > 0) {
+                updateCart();
+                showToast(`${addedCount} first-line drugs added`);
+                checkInteractions();
+            }
+        }
+
+        function removeFromCart(index) {
+            const removed = cart.splice(index, 1)[0];
+            updateCart();
+            checkInteractions();
+            // Reset suggestion card if visible
+            if (currentDiagnosis && protocols[currentDiagnosis]) {
+                showSuggestions(currentDiagnosis);
+            }
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartEmpty = document.getElementById('cartEmpty');
+            const cartCount = document.getElementById('cartCount');
+
+            cartCount.textContent = cart.length;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <div class="cart-empty-icon">📋</div>
+                        <div class="cart-empty-text">No medicines yet</div>
+                        <div class="cart-empty-hint">Type a diagnosis to get smart suggestions</div>
+                    </div>
+                `;
+                return;
+            }
+
+            cartItems.innerHTML = cart.map((item, i) => `
+                <div class="cart-item">
+                    <div class="cart-item-header">
+                        <span class="cart-item-name">${item.name}</span>
+                        <button class="cart-item-remove" onclick="removeFromCart(${i})">✕</button>
+                    </div>
+                    <div class="cart-item-details">
+                        <span class="cart-item-chip chip-form">${item.form}</span>
+                        <span class="cart-item-chip chip-dose">${item.strength}</span>
+                        <span class="cart-item-chip chip-freq">${item.freq}</span>
+                        <span class="cart-item-chip chip-dur">${item.duration}</span>
+                    </div>
+                    ${item.aiSuggested ? '<div class="cart-item-ai-tag">✨ AI Suggested</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function checkInteractions() {
+            const warning = document.getElementById('interactionWarning');
+            const warningText = document.getElementById('interactionText');
+            const names = cart.map(c => c.name);
+
+            for (const [key, val] of Object.entries(interactions)) {
+                const [a, b] = key.split('+');
+                if (names.includes(a) && names.includes(b)) {
+                    warningText.textContent = val.text;
+                    warning.classList.add('visible');
+                    return;
+                }
+            }
+            warning.classList.remove('visible');
+        }
+
+        function dismissInteraction() {
+            document.getElementById('interactionWarning').classList.remove('visible');
+        }
+
+        function generatePDF() {
+            if (cart.length === 0) {
+                showToast('Add medicines first');
+                return;
+            }
+            showToast('📄 Prescription PDF generated!');
+        }
+
+        // ═══════════════════════════════════════════
+        // TOAST
+        // ═══════════════════════════════════════════
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            toastText.textContent = text;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2500);
+        }
+
+        // ═══════════════════════════════════════════
+        // MANUAL SEARCH (simple demo)
+        // ═══════════════════════════════════════════
+        const manualDrugs = [
+            { name: "Paracetamol", generic: "Analgesic / Antipyretic", form: "Tablet", strength: "500mg", freq: "Thrice daily", duration: "3 days" },
+            { name: "Amoxicillin", generic: "Penicillin Antibiotic", form: "Capsule", strength: "500mg", freq: "Thrice daily", duration: "5 days" },
+            { name: "Azithromycin", generic: "Macrolide Antibiotic", form: "Tablet", strength: "500mg", freq: "Once daily", duration: "3 days" },
+            { name: "Omeprazole", generic: "Proton Pump Inhibitor", form: "Capsule", strength: "20mg", freq: "Once daily", duration: "4 weeks" },
+        ];
+
+        document.getElementById('manualSearch').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const val = this.value.trim().toLowerCase();
+                const match = manualDrugs.find(d => d.name.toLowerCase().includes(val));
+                if (match && !cart.some(c => c.name === match.name)) {
+                    cart.push({ ...match, aiSuggested: false });
+                    updateCart();
+                    showToast(`${match.name} added`);
+                    this.value = '';
+                    checkInteractions();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
