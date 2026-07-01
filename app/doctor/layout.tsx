@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AppSidebar from '@/components/layout/AppSidebar';
 import AppHeader from '@/components/layout/AppHeader';
@@ -19,6 +19,14 @@ export default function DoctorLayout({
   const { user, profile, isLoading } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Persist sidebar state
+  useEffect(() => {
+    const stored = localStorage.getItem('rxnxt_sidebar_collapsed');
+    if (stored) {
+      setSidebarCollapsed(stored === 'true');
+    }
+  }, []);
   const router = useRouter();
 
   if (isLoading) {
@@ -36,7 +44,11 @@ export default function DoctorLayout({
     return null;
   }
 
-  const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
+  const toggleSidebar = () => {
+    const newState = !sidebarCollapsed;
+    setSidebarCollapsed(newState);
+    localStorage.setItem('rxnxt_sidebar_collapsed', String(newState));
+  };
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   return (
