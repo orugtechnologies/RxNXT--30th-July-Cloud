@@ -12,44 +12,62 @@ export async function GET() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Execute queries sequentially to avoid exhausting serverless database connection pools
-    const totalPatients = await prisma.patient.count({ where: { clinicId } });
-    const totalPrescriptions = await prisma.prescription.count({ where: { clinicId } });
-    const todayPrescriptions = await prisma.prescription.count({
-      where: { clinicId, createdAt: { gte: today } },
-    });
-    
-    const recentPrescriptions = await prisma.prescription.findMany({
-      where: { clinicId },
-      orderBy: { createdAt: 'desc' },
-      take: 10,
-      include: {
-        patient: { select: { name: true, age: true, gender: true } },
-        encounter: { select: { chiefComplaint: true, diagnosis: true, followUpDate: true } },
-        medicines: { select: { id: true } },
-      },
-    });
+    // Run all counts in parallel for maximum performance
+    const [
+      totalPatients,
+      totalPrescriptions,
+      todayPrescriptions,
+      recentPrescriptions,
+      followUps,
+      frequentMedsPrefs,
+    ] = await Promise.all([
+      // Total patients in clinic
+      prisma.patient.count({ where: { clinicId } }),
 
-    const followUps = await prisma.encounter.findMany({
-      where: {
-        clinicId,
-        followUpDate: {
-          gte: today.toISOString().split('T')[0],
-          lte: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      // Total prescriptions in clinic
+      prisma.prescription.count({ where: { clinicId } }),
+
+      // Today's prescriptions
+      prisma.prescription.count({
+        where: { clinicId, createdAt: { gte: today } },
+      }),
+
+      // Recent prescriptions (last 10)
+      prisma.prescription.findMany({
+        where: { clinicId },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        include: {
+          patient: { select: { name: true, age: true, gender: true } },
+          encounter: { select: { chiefComplaint: true, diagnosis: true, followUpDate: true } },
+          medicines: { select: { id: true } },
         },
-      },
-      orderBy: { followUpDate: 'asc' },
-      take: 10,
-      include: {
-        patient: { select: { name: true, phone: true, age: true, gender: true } },
-      },
-    });
+      }),
 
-    const frequentMeds = await prisma.drug.findMany({
-      where: { prescriptionCount: { gt: 0 } },
-      orderBy: { prescriptionCount: 'desc' },
-      take: 10,
-    });
+      // Upcoming follow-ups (next 7 days)
+      prisma.encounter.findMany({
+        where: {
+          clinicId,
+          followUpDate: {
+            gte: today.toISOString().split('T')[0],
+            lte: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+          },
+        },
+        orderBy: { followUpDate: 'asc' },
+        take: 10,
+        include: {
+          patient: { select: { name: true, phone: true, age: true, gender: true } },
+        },
+      }),
+
+      // Frequent medicines for THIS clinic (fast query)
+      prisma.clinicDrugPreference.findMany({
+        where: { clinicId, count: { gt: 0 } },
+        orderBy: { count: 'desc' },
+        take: 10,
+        include: { drug: true }
+      }),
+    ]);
 
     // Format recent prescriptions
     const formattedRecentRx = recentPrescriptions.map((rx) => ({
@@ -85,13 +103,13 @@ export async function GET() {
     });
 
     // Format frequent medicines
-    const formattedFreqMeds = frequentMeds.map((d) => ({
-      medicine_id: d.id,
-      medicine_name: d.brandName ?? d.genericName,
-      dosage_form: d.dosageForm,
-      strength: d.strength,
-      route: d.route,
-      prescription_count: d.prescriptionCount,
+    const formattedFreqMeds = frequentMedsPrefs.map((pref) => ({
+      medicine_id: pref.drug.id,
+      medicine_name: pref.drug.brandName ?? pref.drug.genericName,
+      dosage_form: pref.drug.dosageForm,
+      strength: pref.drug.strength,
+      route: pref.drug.route,
+      prescription_count: pref.count,
     }));
 
     return NextResponse.json({
