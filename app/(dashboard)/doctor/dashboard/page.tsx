@@ -10,6 +10,7 @@ import FrequentMedicines from '@/components/dashboard/FrequentMedicines';
 import { Loader2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import WelcomeSplash from '@/components/dashboard/WelcomeSplash';
 
 export default function DashboardPage() {
   const { data, isLoading, error } = useDashboard();
@@ -49,6 +50,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <WelcomeSplash doctorName={doctorName} />
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
