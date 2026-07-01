@@ -36,6 +36,11 @@ function PrescriptionWorkflowContent() {
   // Using a key to remount TreatmentGroupsUI and fetch fresh templates
   const [templateKey, setTemplateKey] = useState(0);
 
+  // Speed tracking metrics
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [creationMethod, setCreationMethod] = useState<'MANUAL' | 'TEMPLATE'>('MANUAL');
+  const [lastTimeTaken, setLastTimeTaken] = useState<number | null>(null);
+
   useEffect(() => {
     const cloneId = searchParams.get('clone');
     if (cloneId) {
@@ -45,6 +50,7 @@ function PrescriptionWorkflowContent() {
         .then(json => {
           if (json.data) {
             setPatient(json.data.patient);
+            if (!startTime) setStartTime(Date.now());
             setChiefComplaint(json.data.chiefComplaint || '');
             setDiagnosis(json.data.diagnosis || '');
             setNotes(json.data.notes || '');
@@ -71,6 +77,7 @@ function PrescriptionWorkflowContent() {
 
   const handlePatientSelect = async (selectedPatient: Patient) => {
     setPatient(selectedPatient);
+    if (!startTime) setStartTime(Date.now());
     setFetchingPastRx(true);
     
     try {
@@ -109,6 +116,7 @@ function PrescriptionWorkflowContent() {
 
   const loadTemplate = (meds: PrescribedMedicine[]) => {
     setMedicines([...medicines, ...meds]);
+    setCreationMethod('TEMPLATE');
   };
 
   const updateMedicine = (id: string, updates: Partial<PrescribedMedicine>) => {
@@ -132,7 +140,9 @@ function PrescriptionWorkflowContent() {
           diagnosis,
           notes,
           followUpDate,
-          medicines
+          medicines,
+          timeTakenSeconds: startTime ? Math.floor((Date.now() - startTime) / 1000) : null,
+          creationMethod
         })
       });
       
@@ -145,6 +155,9 @@ function PrescriptionWorkflowContent() {
       });
       
       setPrescriptionId(data.prescriptionId);
+      if (startTime) {
+        setLastTimeTaken(Math.floor((Date.now() - startTime) / 1000));
+      }
       setIsSuccess(true);
     } catch (err) {
       console.error(err);
@@ -164,6 +177,9 @@ function PrescriptionWorkflowContent() {
     setShowReview(false);
     setIsSuccess(false);
     setPrescriptionId(undefined);
+    setStartTime(null);
+    setCreationMethod('MANUAL');
+    setLastTimeTaken(null);
   };
 
   if (tab === 'templates') {
@@ -361,6 +377,7 @@ function PrescriptionWorkflowContent() {
           saving={saving}
           isSuccess={isSuccess}
           prescriptionId={prescriptionId}
+          timeTakenSeconds={lastTimeTaken}
           onClose={() => {
             if (isSuccess) startNewPrescription();
             else setShowReview(false);

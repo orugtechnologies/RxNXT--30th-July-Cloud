@@ -26,6 +26,7 @@ function SidebarNavigation({ collapsed, userRole }: { collapsed: boolean, userRo
     { name: 'New Prescription', href: '/doctor/prescription', icon: FilePlus },
     { name: 'Patients', href: '/doctor/patients', icon: Users },
     { name: 'Templates', href: '/doctor/prescription?tab=templates', icon: BookOpen },
+    { name: 'Analytics', href: '/doctor/analytics', icon: Activity },
   ];
 
   if (userRole === 'clinic_admin' || userRole === 'super_admin') {

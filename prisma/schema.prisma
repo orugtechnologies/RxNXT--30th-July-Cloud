@@ -110,6 +110,8 @@ model Prescription {
   patientId   String
   patient     Patient  @relation(fields: [patientId], references: [id])
   createdAt   DateTime @default(now())
+  timeTakenSeconds Int?
+  creationMethod   String?
 
   medicines PrescriptionMedicine[]
   reminders Reminder[]

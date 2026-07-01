@@ -15,6 +15,7 @@ interface ReviewModalProps {
   saving: boolean;
   isSuccess?: boolean;
   prescriptionId?: string;
+  timeTakenSeconds?: number | null;
   onClose: () => void;
   onConfirm: () => void;
   onNewPrescription?: () => void;
@@ -30,6 +31,7 @@ export default function ReviewPrescriptionModal({
   saving,
   isSuccess,
   prescriptionId,
+  timeTakenSeconds,
   onClose,
   onConfirm,
   onNewPrescription
@@ -46,7 +48,12 @@ export default function ReviewPrescriptionModal({
         body: JSON.stringify({ prescriptionId })
       });
       if (!res.ok) throw new Error('Failed to send WhatsApp message');
-      alert('Prescription successfully sent via WhatsApp!');
+      
+      if (timeTakenSeconds) {
+        alert(`✅ Prescription sent successfully! (Completed in ${timeTakenSeconds} seconds 🚀)`);
+      } else {
+        alert('✅ Prescription sent successfully!');
+      }
     } catch (err) {
       console.error(err);
       alert('Error sending WhatsApp message');

@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const { patientId, chiefComplaint, diagnosis, notes, followUpDate, medicines } = await request.json();
+    const { patientId, chiefComplaint, diagnosis, notes, followUpDate, medicines, timeTakenSeconds, creationMethod } = await request.json();
 
     if (!patientId || !medicines || medicines.length === 0) {
       return NextResponse.json({ error: 'Patient and at least 1 medicine are required' }, { status: 400 });
@@ -40,6 +40,8 @@ export async function POST(request: Request) {
           encounterId: encounter.id,
           doctorId: user.id,
           patientId,
+          timeTakenSeconds: timeTakenSeconds || null,
+          creationMethod: creationMethod || 'MANUAL',
         },
       });
 
