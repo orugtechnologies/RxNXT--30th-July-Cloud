@@ -3,3 +3,5 @@ node_modules/
 rxnxt-db.json
 .env
 .next/
+coverage/  
+test-report.html  
