@@ -15,15 +15,15 @@ export default function WelcomeSplash({ doctorName }: { doctorName: string }) {
       setShow(true);
       sessionStorage.setItem('hasSeenWelcomeSplash', 'true');
       
-      // Start fading out after 2.5s
+      // Start fading out after 5s
       const fadeTimer = setTimeout(() => {
         setIsFadingOut(true);
-      }, 2500);
+      }, 5000);
 
       // Completely remove from DOM after fade finishes
       const removeTimer = setTimeout(() => {
         setShow(false);
-      }, 3200); // Wait for the transition to finish
+      }, 5700); // Wait for the transition to finish
 
       return () => {
         clearTimeout(fadeTimer);
