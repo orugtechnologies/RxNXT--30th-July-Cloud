@@ -13,16 +13,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, profile, isLoading } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('rxnxt_sidebar_collapsed') === 'true';
+    }
+    return false;
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Persist sidebar state
-  useEffect(() => {
-    const stored = localStorage.getItem('rxnxt_sidebar_collapsed');
-    if (stored) {
-      setSidebarCollapsed(stored === 'true');
-    }
-  }, []);
   const router = useRouter();
 
   if (isLoading) {
